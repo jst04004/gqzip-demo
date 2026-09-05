@@ -1,0 +1,44 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "gqzip"
+version = "1.0.0"
+description = "Context-Adaptive Genomic Quality Score Quantization and Bounded-Memory Streaming FASTQ Compression Engine"
+readme = "README.md"
+requires-python = ">=3.8"
+license = {text = "Apache-2.0"}
+authors = [
+    {name = "Jonathan S. Taylor", email = "contact@gqzip.org"}
+]
+keywords = ["genomics", "bioinformatics", "compression", "fastq", "rans", "dna", "variant-calling"]
+classifiers = [
+    "Development Status :: 5 - Production/Stable",
+    "Intended Audience :: Science/Research",
+    "Topic :: Scientific/Engineering :: Bio-Informatics",
+    "License :: OSI Approved :: Apache Software License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: C++",
+]
+dependencies = [
+    "numpy>=1.20.0",
+    "psutil>=5.8.0",
+]
+
+[project.scripts]
+gqzip = "gqzip.cli:main"
+
+[project.urls]
+Homepage = "https://github.com/jst04004/gqzip-demo"
+Documentation = "https://github.com/jst04004/gqzip-demo#readme"
+Repository = "https://github.com/jst04004/gqzip-demo.git"
+"Bug Tracker" = "https://github.com/jst04004/gqzip-demo/issues"
+
+[tool.setuptools.packages.find]
+where = ["python"]

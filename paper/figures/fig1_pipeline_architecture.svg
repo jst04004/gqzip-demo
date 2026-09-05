@@ -1,0 +1,106 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 680" width="100%" height="100%">
+  <defs>
+    <style>
+      .box { fill: #f8fafc; stroke: #0f172a; stroke-width: 2; rx: 8; }
+      .box-blue { fill: #eff6ff; stroke: #1d4ed8; stroke-width: 2; rx: 8; }
+      .box-green { fill: #f0fdf4; stroke: #15803d; stroke-width: 2; rx: 8; }
+      .box-orange { fill: #fff7ed; stroke: #c2410c; stroke-width: 2; rx: 8; }
+      .title { font-family: 'Times New Roman', serif; font-weight: bold; font-size: 15px; fill: #0f172a; text-anchor: middle; }
+      .subtitle { font-family: 'Times New Roman', serif; font-size: 12px; fill: #475569; text-anchor: middle; }
+      .stream-label { font-family: 'Times New Roman', serif; font-size: 11px; font-weight: bold; fill: #1e293b; text-anchor: middle; }
+      .arrow { stroke: #0f172a; stroke-width: 2; fill: none; marker-end: url(#arrowhead); }
+      .arrow-dashed { stroke: #c2410c; stroke-width: 2; stroke-dasharray: 5,5; fill: none; marker-end: url(#arrowhead-orange); }
+      .pill { fill: #ffffff; stroke: #94a3b8; stroke-width: 1; rx: 4; }
+    </style>
+    <marker id="arrowhead" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto">
+      <polygon points="0 0, 8 3, 0 6" fill="#0f172a" />
+    </marker>
+    <marker id="arrowhead-orange" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto">
+      <polygon points="0 0, 8 3, 0 6" fill="#c2410c" />
+    </marker>
+  </defs>
+
+  <!-- Background Canvas -->
+  <rect width="1000" height="680" fill="#ffffff" />
+
+  <!-- Layer 1: FASTQ Input -->
+  <rect class="box" x="300" y="30" width="400" height="55" />
+  <text class="title" x="500" y="53">Raw FASTQ Input Ingestion Stream</text>
+  <text class="subtitle" x="500" y="72">Unaligned Records: Header, Sequence, Quality Lines</text>
+
+  <!-- Layer 2: Ring Buffer -->
+  <rect class="box-green" x="300" y="120" width="400" height="55" />
+  <text class="title" x="500" y="143" fill="#15803d">Constant-Memory Ring Buffer</text>
+  <text class="subtitle" x="500" y="162">Strictly Bounded RAM Allocation (RSS &lt; 50 MB)</text>
+
+  <!-- Arrow 1 to 2 -->
+  <path class="arrow" d="M 500 85 L 500 120" />
+
+  <!-- Layer 3: Parallel Streams -->
+  <!-- Stream 1: Headers -->
+  <rect class="box" x="70" y="230" width="240" height="75" />
+  <text class="title" x="190" y="255">Header Tokenizer</text>
+  <text class="subtitle" x="190" y="275">Flowcell Delta Encoding</text>
+  <text class="subtitle" x="190" y="293">(Xn - Xn-1, Yn - Yn-1)</text>
+
+  <!-- Stream 2: DNA -->
+  <rect class="box" x="380" y="230" width="240" height="75" />
+  <text class="title" x="500" y="255">DNA Sequence Packer</text>
+  <text class="subtitle" x="500" y="275">2-Bit Representation</text>
+  <text class="subtitle" x="500" y="293">(4 bases/byte + IUPAC Mask)</text>
+
+  <!-- Stream 3: Quality -->
+  <rect class="box-blue" x="690" y="230" width="240" height="75" />
+  <text class="title" x="810" y="255" fill="#1d4ed8">Context-Adaptive Quantizer</text>
+  <text class="subtitle" x="810" y="275">1D Shannon Entropy H(Wi)</text>
+  <text class="subtitle" x="810" y="293">+ 3' Cycle Decay Kinetics D(i)</text>
+
+  <!-- Arrows from Ring Buffer to 3 Streams -->
+  <path class="arrow" d="M 380 175 L 190 230" />
+  <rect class="pill" x="225" y="190" width="110" height="20" />
+  <text class="stream-label" x="280" y="204">Stream 1: Headers</text>
+
+  <path class="arrow" d="M 500 175 L 500 230" />
+  <rect class="pill" x="455" y="190" width="90" height="20" />
+  <text class="stream-label" x="500" y="204">Stream 2: DNA</text>
+
+  <path class="arrow" d="M 620 175 L 810 230" />
+  <rect class="pill" x="665" y="190" width="110" height="20" />
+  <text class="stream-label" x="720" y="204">Stream 3: Quality</text>
+
+  <!-- Lossless Residual Codec (Stream 3 Branch) -->
+  <rect class="box-orange" x="690" y="350" width="240" height="65" />
+  <text class="title" x="810" y="373" fill="#c2410c">ZigZag Residual Codec</text>
+  <text class="subtitle" x="810" y="391">Delta q = q_raw - q_quant</text>
+  <text class="subtitle" x="810" y="406">(Lossless Mode: -b 5)</text>
+
+  <!-- Arrow between Quantizer bottom and Residual Codec top -->
+  <path class="arrow-dashed" d="M 810 305 L 810 350" />
+
+  <!-- Layer 4: rANS Codec -->
+  <rect class="box" x="100" y="490" width="800" height="65" />
+  <text class="title" x="500" y="515">Interleaved Range Asymmetric Numeral Systems (rANS) Codec</text>
+  <text class="subtitle" x="500" y="535">4-Way Lock-Free SIMD Parallel Entropy Encoding Contexts (AVX-512 / AVX2)</text>
+
+  <!-- Streams into rANS -->
+  <path class="arrow" d="M 190 305 L 190 490" />
+  <path class="arrow" d="M 500 305 L 500 490" />
+  
+  <!-- Quantized Centroids Arrow: originates from LEFT side of Context-Adaptive Quantizer (x=690, y=267.5), steps left to x=630, then goes straight DOWN to rANS (y=490) -->
+  <path class="arrow" d="M 690 267.5 L 630 267.5 L 630 490" />
+  <rect class="pill" x="570" y="368" width="115" height="20" />
+  <text class="stream-label" x="627" y="382" font-size="10">Quantized Centroids</text>
+
+  <!-- Lossless Residuals Arrow: originates from bottom of ZigZag Codec (x=810, y=415) straight down to rANS (y=490) -->
+  <path class="arrow-dashed" d="M 810 415 L 810 490" />
+  <rect class="pill" x="760" y="440" width="100" height="20" />
+  <text class="stream-label" x="810" y="454" font-size="10" fill="#c2410c">Lossless Residuals</text>
+
+  <!-- Layer 5: GBLK Container -->
+  <rect class="box-green" x="100" y="590" width="800" height="55" />
+  <text class="title" x="500" y="613" fill="#15803d">GBLK Streaming Binary Container &amp; Direct AWS S3 Gateway</text>
+  <text class="subtitle" x="500" y="632">Self-Contained Block Header + Payload + CRC32 Checksum (Zero-Disk Cloud Staging)</text>
+
+  <!-- Arrow from rANS to GBLK -->
+  <path class="arrow" d="M 500 555 L 500 590" />
+</svg>

@@ -1,0 +1,53 @@
+# Python bytecode & cache
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Distribution / Packaging
+build/
+dist/
+*.egg-info/
+*.egg
+eggs/
+.eggs/
+
+# Environments
+.env
+.venv
+env/
+venv/
+ENV/
+
+# Temporary data & benchmark scratch files
+temp*
+*.fastq
+*.fq
+*.gqz
+!data/*.fastq
+!data/*.fq
+!data/*.gqz
+*report*.html
+scratch/
+.system_generated/
+
+# OS specific
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# C++ build artifacts
+bin/
+obj/
+*.o
+*.a
+*.lib
+*.dll
+*.exe
+CMakeFiles/
+CMakeCache.txt
+cmake_install.cmake
+Makefile
